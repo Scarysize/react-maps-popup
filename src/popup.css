@@ -1,0 +1,17 @@
+.popup {
+  background: #fff;
+  padding: 10px;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 20px));
+}
+
+.popup::after {
+  content: '';
+  display: block;
+  position: absolute;
+  background: #fff;
+  width: 20px;
+  height: 20px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}

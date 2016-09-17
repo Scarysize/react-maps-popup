@@ -9,25 +9,33 @@ const OPTIONS = {
 }
 
 export default class Map extends Component {
+  constructor() {
+    super();
+    this.state = {initialized: false};
+  }
+
   initMap(container) {
-    if (!container) {
+    if (!container || this.state.initialized) {
       return;
     }
 
-    this.map = new google.maps.Map(container, OPTIONS); // eslint-disable-line
+    const map = new google.maps.Map(container, OPTIONS);  // eslint-disable-line
 
     if (this.props.children) {
-      this.props.children(this.map);
+      this.props.children(map);
     }
+
+    this.setState({initialized: true});
+  }
+
+  shouldComponentUpdate(nextProps, {initialized}) {
+    return !initialized ? true : false;
   }
 
   render() {
-    return (
-      <div
-        ref={div => this.initMap(div)}
-        style={{height: '100%'}}
-      >
-      </div>
-    );
+    return <div
+            ref={div => this.initMap(div)}
+            style={{height: '100%', width: '100%'}}
+           />;
   }
 }
