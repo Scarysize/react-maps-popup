@@ -1,32 +1,44 @@
-import React, { Component, PropTypes } from 'react';
-
-import './popup.css';
+import React, {Component, PropTypes} from 'react';
 
 import calcPixelPosition from './calcPixelPosition';
 
+import './popup.css';
+
+const eventsToListenFor = [
+  'center_changed',
+  'bounds_changed',
+  'drag',
+  'projection_changed',
+  'tilesloaded',
+  'zoom_changed'
+];
+
 export default class Popup extends Component {
-  constructor({coords, map}) {
+  constructor(props) {
     super();
-    this.map = map;
+
+    this.map = props.map;
+    this.mapListeners = [];
+
     this.state = {
       pixel: {x: null, y: null}
     };
   }
 
   componentWillMount() {
-    const {map} = this;
-    const {coords} = this.props;
+    const {map, props} = this;
+    const {coords} = props;
     const recalcPosition = () => this.setState({
       pixel: calcPixelPosition(coords, map)
     });
 
-    this.centerChangedListener = recalcPosition;
-    this.projectionChangedListener = recalcPosition;
-    this.zoomChangedListener = recalcPosition;
+    eventsToListenFor
+      .map(eventName => map.addListener(eventName, () => recalcPosition()))
+      .map(listener => this.mapListeners.push(listener));
+  }
 
-    map.addListener('center_changed', this.centerChangedListener);
-    map.addListener('projection_changed', this.projectionChangedListener);
-    map.addListener('zoom_changed', this.zoomChangedListener);
+  componentWillUnmount() {
+    this.mapListeners.forEach(listener => this.map.removeListener(listener));
   }
 
   render() {
@@ -38,18 +50,16 @@ export default class Popup extends Component {
     };
 
     return (
-      <div
-        className="popup"
-        style={style}
-      >
-        {this.props.children}
+      <div className="popup" style={style}>
+        {this.props.children || 'Hello there!'}
       </div>
-    )
+    );
   }
 }
 
 Popup.propTypes = {
+  children: PropTypes.array,
   coords: PropTypes.object.isRequired,
   map: PropTypes.object.isRequired,
   styles: PropTypes.object
-}
+};

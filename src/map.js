@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 const OPTIONS = {
   center: {
@@ -6,7 +6,7 @@ const OPTIONS = {
     lng: 9.9937
   },
   zoom: 12
-}
+};
 
 export default class Map extends Component {
   constructor() {
@@ -14,12 +14,16 @@ export default class Map extends Component {
     this.state = {initialized: false};
   }
 
+  /**
+   * Initializes the Google Map.
+   * @param  {HTMLElement} container  The container for the map
+   */
   initMap(container) {
     if (!container || this.state.initialized) {
       return;
     }
 
-    const map = new google.maps.Map(container, OPTIONS);  // eslint-disable-line
+    const map = new google.maps.Map(container, OPTIONS);
 
     if (this.props.children) {
       this.props.children(map);
@@ -29,13 +33,15 @@ export default class Map extends Component {
   }
 
   shouldComponentUpdate(nextProps, {initialized}) {
-    return !initialized ? true : false;
+    return initialized ? false : true;
   }
 
   render() {
-    return <div
-            ref={div => this.initMap(div)}
-            style={{height: '100%', width: '100%'}}
-           />;
+    return (
+      <div
+        ref={container => this.initMap(container)}
+        style={{height: '100%', width: '100%'}}
+      />
+    );
   }
 }

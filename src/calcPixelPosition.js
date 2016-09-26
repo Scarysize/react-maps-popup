@@ -24,7 +24,7 @@ export default function calcPixelPosition(coords, map) {
   const pixel = {
     x: (worldPoint.x - bottomLeft.x) * scale,
     y: (worldPoint.y - topRight.y) * scale
-  }
+  };
 
   return pixel;
 }
